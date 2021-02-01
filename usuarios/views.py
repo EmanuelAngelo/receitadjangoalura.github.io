@@ -36,7 +36,7 @@ def login(request):
         if email == '' or senha == '':
             print('os campos email e senha nao podem ficar em branco')
             return redirect ('login')
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists(): #camparando se email existe no banco de dados
             nome = User.objects.filter(email=email).values_list('username', flat=True).get()
             user = auth.authenticate(request, username=nome, password=senha)
             if user is not None:
@@ -45,7 +45,14 @@ def login(request):
     return render(request,'usuarios/login.html')
 
 def logout(request):
-    pass
+    auth.logout(request)
+    return redirect('index')
 
 def dashboard(request):
-    return render(request, 'usuarios/dashboard.html')
+    if request.user.is_authenticated: #saber se usuario esta logado
+        return render(request, 'usuarios/dashboard.html')
+    else:
+        return redirect('index')
+
+def cria_receita(request):
+    return render(request, 'usuarios/cria_receita.html')
