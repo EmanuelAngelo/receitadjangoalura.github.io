@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import auth
+from receitas.models import Receita
 
 # Create your views here.
 
@@ -63,7 +64,11 @@ def cria_receita(request):
         rendimento = request.POST['rendimento']
         categoria = request.POST['categoria']
         foto_receita = request.FILES['foto_receita']
-        print(nome_receita, ingredientes, modo_preparo, tempo_preparo, rendimento, categoria)
+        user = get_object_or_404(User, pk=request.user.id) #tras o id do usuario na requisição e atribui a variavel user
+        receita = Receita.objects.create(pessoa=user, nome_receita=nome_receita, #inviando dados para banco de dados
+        ingredientes=ingredientes, modo_preparo=modo_preparo, tempo_preparo=tempo_preparo,
+        rendimento=rendimento, categoria=categoria, foto_receita=foto_receita)
+        receita.save() #salvando dados no banco de dados
         return redirect('dashboard')
     else:
         return render(request, 'usuarios/cria_receita.html')
