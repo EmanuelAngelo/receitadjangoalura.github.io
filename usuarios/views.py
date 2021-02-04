@@ -51,7 +51,12 @@ def logout(request):
 
 def dashboard(request):
     if request.user.is_authenticated: #saber se usuario esta logado
-        return render(request, 'usuarios/dashboard.html')
+        id = request.user.id
+        receitas = Receita.objects.order.by ('-date_receita').filter(pessoa=id)
+        dados = {
+            'receitas': receitas
+        }
+        return render(request, 'usuarios/dashboard.html', dados)
     else:
         return redirect('index')
 
